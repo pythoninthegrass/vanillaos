@@ -35,9 +35,7 @@ stages:
   - name: install-ptyxis
     type: shell
     commands:
-      - flatpak remote-add --if-not-exists gnome-nightly https://nightly.gnome.org/repo/
-      - flatpak install -y gnome-nightly org.gnome.Platform//master
-      - flatpak install -y --noninteractive https://nightly.gnome.org/repo/appstream/org.gnome.Ptyxis.Devel.flatpakref
+      - flatpak install -y --noninteractive --from https://nightly.gnome.org/repo/appstream/org.gnome.Ptyxis.Devel.flatpakref
 
   - name: my-packages
     type: apt
