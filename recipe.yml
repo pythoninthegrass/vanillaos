@@ -1,15 +1,14 @@
-name: Custom Vanilla Desktop # Replace this name with your image name
-id: custom # Replace this ID with your image ID
+name: vanillaos
+id: sane-defaults
 stages:
 - id: build
-  base: ghcr.io/vanilla-os/desktop:main # Optionally, Replace this image URL with a different one i.e. nvidia:main, etc
+  base: ghcr.io/vanilla-os/desktop:main
   singlelayer: false
   labels:
-    maintainer: self-maintained # Optionally, Replace this with your name
+    maintainer: pythoninthegrass
   args:
-    DEBIAN_FRONTEND: noninteractive # Set the image environment as non-interactive
-  
-  # Commands to run first before building the modules
+    DEBIAN_FRONTEND: noninteractive
+
   runs:
     commands:
       - echo 'APT::Install-Recommends "1";' > /etc/apt/apt.conf.d/01norecommends
@@ -18,30 +17,71 @@ stages:
   - name: init-setup
     type: shell
     commands:
-    - lpkg --unlock
-    - apt-get update
+      - lpkg --unlock
+      - apt-get update
 
-  # Put your custom actions behind this comment
+  - name: install-docker
+    type: shell
+    commands:
+      - |
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+        chmod a+r /etc/apt/keyrings/docker.asc
+        echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable" > /etc/apt/sources.list.d/docker.list
+        cat /etc/apt/sources.list.d/docker.list
+        apt-get update
+        apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-  - name: example-packages # Sample module using the built-in Apt module to install packages
+  - name: install-ptyxis
+    type: shell
+    commands:
+      - flatpak install --from https://nightly.gnome.org/repo/appstream/org.gnome.Ptyxis.Devel.flatpakref
+
+  - name: my-packages
     type: apt
     source:
       packages:
-      - vim
-
-  - name: example-commands # Sample module demonstrating the Shell module with custom commands
-    type: shell
-    commands:
-    - echo Example output
-
-  - name: example-modules # Sample module demonstrating importing local and remote modules
-    type: includes
-    includes:
-      - modules/50-install-debs.yml # Sample local module present in this repository
-      - gh:vanilla-os/dev-image:main:modules/00-basics.yml # Sample GitHub remote module in the format: `gh:your-name/your-repo:branch:modules/file.yml`
-      - https://raw.githubusercontent.com/Vanilla-OS/dev-image/main/modules/05-go.yml # Sample full URL remote module
-
-  # Put your custom actions before this comment
+        - acl
+        - ansible
+        - ansible-lint
+        - bat
+        - build-essential
+        - ca-certificates
+        - fpart
+        - git
+        - jq
+        - libbz2-dev
+        - libdb-dev
+        - libffi-dev
+        - libffi-dev
+        - libgdbm-dev
+        - libgdbm6
+        - libgmp-dev
+        - liblzma-dev
+        - libncurses5-dev
+        - libncursesw5-dev
+        - libreadline-dev
+        - libreadline6-dev
+        - libsqlite3-dev
+        - libssl-dev
+        - libxml2-dev
+        - libxmlsec1-dev
+        - libyaml-dev
+        - llvm
+        - make
+        - nginx
+        - python3
+        - python3-pip
+        - python3-psutil
+        - python3-redis
+        - tk-dev
+        - tree
+        - unzip
+        - vim
+        - wget
+        - xz-utils
+        - zlib1g-dev
 
   - name: set-image-name-abroot
     type: includes
@@ -51,9 +91,9 @@ stages:
   - name: cleanup
     type: shell
     commands:
-    - apt-get autoremove -y
-    - apt-get clean
-    - lpkg --lock
+      - apt-get autoremove -y
+      - apt-get clean
+      - lpkg --lock
 
   - name: fsguard
     type: fsguard
@@ -65,8 +105,8 @@ stages:
       - name: remove-prev-fsguard
         type: shell
         commands:
-          - rm -rf /FsGuard 
-          - rm -f ./minisign.pub ./minisign.key 
+          - rm -rf /FsGuard
+          - rm -f ./minisign.pub ./minisign.key
           - chmod +x /usr/sbin/init
 
   - name: cleanup2

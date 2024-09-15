@@ -6,12 +6,12 @@ on:
     tags:
       - '*'
   schedule:
-    - cron: '21 */6 * * *'
+    - cron: '0 3 * * *'
   pull_request:
   workflow_dispatch:
 
 env:
-  CUSTOM_IMAGE_NAME: custom
+  CUSTOM_IMAGE_NAME: vanillaos:sane-defaults
   BUILDX_NO_DEFAULT_ATTESTATIONS: 1
 
 jobs:
