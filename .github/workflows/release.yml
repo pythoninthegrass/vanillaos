@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - '*'
+    paths:
+      - '.github/workflows/**'
+      - 'includes.container/**'
+      - 'modules/**'
+      - 'recipe.yml'
   workflow_dispatch:
 
 env:
@@ -42,7 +47,7 @@ jobs:
       contents: write # Allow actions to create release
       attestations: write # To create and write attestations
       id-token: write # Additional permissions for the persistence of the attestations
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
