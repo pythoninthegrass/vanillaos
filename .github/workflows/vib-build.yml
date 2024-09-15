@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 env:
-  CUSTOM_IMAGE_NAME: vanillaos:sane-defaults
+  CUSTOM_IMAGE_NAME: vanillaos
   BUILDX_NO_DEFAULT_ATTESTATIONS: 1
 
 jobs:
