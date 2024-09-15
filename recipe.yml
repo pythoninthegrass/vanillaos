@@ -41,21 +41,16 @@ stages:
     type: apt
     source:
       packages:
-        - acl
         - ansible
         - ansible-lint
         - bat
         - build-essential
-        - ca-certificates
         - fpart
-        - git
-        - jq
         - libbz2-dev
         - libdb-dev
         - libffi-dev
         - libffi-dev
         - libgdbm-dev
-        - libgdbm6
         - libgmp-dev
         - liblzma-dev
         - libncurses5-dev
@@ -70,16 +65,12 @@ stages:
         - llvm
         - make
         - nginx
-        - python3
         - python3-pip
         - python3-psutil
         - python3-redis
         - tk-dev
         - tree
-        - unzip
         - vim
-        - wget
-        - xz-utils
         - zlib1g-dev
 
   - name: set-image-name-abroot
