@@ -24,13 +24,19 @@ jobs:
     - name: Cache APT packages
       uses: actions/cache@v4
       with:
-        path: /var/cache/apt/archives
-        key: ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}
+        path: |
+          ~/.apt/archives
+          ~/.apt/lists
+        key: ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}-libfyaml-utils
         restore-keys: |
+          ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}-
           ${{ runner.os }}-apt-
 
-    - name: Install dependencies
-      run: sudo apt-get install -y libfyaml-utils
+    - name: Update and install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libfyaml-utils
+      continue-on-error: true
 
     - name: Read base image name from recipe
       id: read_base_recipe
@@ -49,13 +55,11 @@ jobs:
 
   check_update:
     runs-on: ubuntu-latest
-
     outputs:
       has_updates: ${{ steps.set_output.outputs.has_updates }}
       base_image: ${{ steps.read_base_recipe.outputs.base_image }}
-
     permissions:
-      contents: write # Allow actions to create a digest
+      contents: write
 
     steps:
       - name: Checkout code
@@ -64,13 +68,19 @@ jobs:
       - name: Cache APT packages
         uses: actions/cache@v4
         with:
-          path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}
+          path: |
+            ~/.apt/archives
+            ~/.apt/lists
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}-jq-skopeo-libfyaml-utils
           restore-keys: |
+            ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}-
             ${{ runner.os }}-apt-
 
-      - name: Install dependencies
-        run: sudo apt-get install -y jq skopeo libfyaml-utils
+      - name: Update and install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq skopeo libfyaml-utils
+        continue-on-error: true
 
       - name: Read base image name from recipe
         id: read_base_recipe
@@ -138,9 +148,9 @@ jobs:
       cancel-in-progress: true
 
     permissions:
-      packages: write # Allow pushing images to GHCR
-      attestations: write # To create and write attestations
-      id-token: write # Additional permissions for the persistence of the attestations
+      packages: write
+      attestations: write
+      id-token: write
 
     steps:
     - uses: actions/checkout@v4
@@ -171,7 +181,7 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: |
-          ${{ env. IMAGE_URL }}
+          ${{ env.IMAGE_URL }}
         tags: |
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
@@ -209,7 +219,8 @@ jobs:
           type=registry,ref=${{ env.IMAGE_URL }}:buildcache,mode=max
         platforms: linux/amd64
         provenance: false
-        outputs: type=image,name=${{ env.IMAGE_URL }},push-by-digest=true,name-canonical=true,push=true
+        outputs: |
+          type=image,name=${{ env.IMAGE_URL }},push=true
 
     - name: Attest pushed image
       uses: actions/attest-build-provenance@v1
