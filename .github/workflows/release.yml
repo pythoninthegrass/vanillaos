@@ -22,6 +22,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Cache APT packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.apt/archives
+          ~/.apt/lists
+        key: ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}-libfyaml-utils
+        restore-keys: |
+          ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}-
+          ${{ runner.os }}-apt-
+
     - name: Install dependencies
       run: sudo apt-get install -y libfyaml-utils
 
@@ -44,9 +55,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: verify-image
     permissions:
-      contents: write # Allow actions to create release
+      contents: write     # Allow actions to create release
       attestations: write # To create and write attestations
-      id-token: write # Additional permissions for the persistence of the attestations
+      id-token: write     # Additional permissions for the persistence of the attestations
 
     steps:
       - name: Checkout
@@ -56,17 +67,17 @@ jobs:
 
       - uses: vanilla-os/vib-gh-action@v0.8.1
         with:
-            recipe: 'recipe.yml'
-            plugins: 'Vanilla-OS/vib-fsguard:v1.5.3'
+          recipe: 'recipe.yml'
+          plugins: 'Vanilla-OS/vib-fsguard:v1.5.3'
 
       - uses: actions/upload-artifact@v4
         with:
-            name: Containerfile
-            path: Containerfile
+          name: Containerfile
+          path: Containerfile
 
       - name: Create Release
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release create "${{ github.ref_name }}" --generate-notes Containerfile
 
       - name: Attest Release Files
