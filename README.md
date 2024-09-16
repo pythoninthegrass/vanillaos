@@ -8,7 +8,7 @@ Point ABRoot to pythoninthegrass' custom image to use it.
   * Default with `Blackbox`, only necessary over SSH or another terminal
 * Edit the configuration file with the command: `abroot config-editor`
 * Change the "name" entry from something like `vanilla-os/desktop` to `pythoninthegrass/vanillaos`
-* Now, run `abroot upgrade` to switch to your custom image
+* Now, run `abroot upgrade` to switch to the custom image
 
 **Exhibit A**:
 
