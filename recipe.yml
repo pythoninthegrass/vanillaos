@@ -14,94 +14,94 @@ stages:
       - echo 'APT::Install-Recommends "1";' > /etc/apt/apt.conf.d/01norecommends
 
   modules:
-  - name: init-setup
-    type: shell
-    commands:
-      - lpkg --unlock
-      - apt-get update
+    - name: init-setup
+      type: shell
+      commands:
+        - lpkg --unlock
+        - apt-get update
 
-  - name: install-docker
-    type: shell
-    commands:
-      - install -m 0755 -d /etc/apt/keyrings
-      - curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
-      - chmod a+r /etc/apt/keyrings/docker.asc
-      - echo \
-        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable" > /etc/apt/sources.list.d/docker.list
-      - cat /etc/apt/sources.list.d/docker.list
-      - apt-get update
-      - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    - name: install-docker
+      type: shell
+      commands:
+        - install -m 0755 -d /etc/apt/keyrings
+        - curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+        - chmod a+r /etc/apt/keyrings/docker.asc
+        - echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable" > /etc/apt/sources.list.d/docker.list
+        - cat /etc/apt/sources.list.d/docker.list
+        - apt-get update
+        - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-  - name: install-ptyxis
-    type: shell
-    commands:
-      - flatpak install -y --noninteractive --from https://nightly.gnome.org/repo/appstream/org.gnome.Ptyxis.Devel.flatpakref
+    - name: install-ptyxis
+      type: shell
+      commands:
+        - flatpak install -y --noninteractive --from https://nightly.gnome.org/repo/appstream/org.gnome.Ptyxis.Devel.flatpakref
 
-  - name: my-packages
-    type: apt
-    source:
-      packages:
-        - ansible
-        - ansible-lint
-        - bat
-        - build-essential
-        - fpart
-        - libbz2-dev
-        - libdb-dev
-        - libffi-dev
-        - libffi-dev
-        - libgdbm-dev
-        - libgmp-dev
-        - liblzma-dev
-        - libncurses5-dev
-        - libncursesw5-dev
-        - libreadline-dev
-        - libreadline6-dev
-        - libsqlite3-dev
-        - libssl-dev
-        - libxml2-dev
-        - libxmlsec1-dev
-        - libyaml-dev
-        - llvm
-        - make
-        - nginx
-        - python3-pip
-        - python3-psutil
-        - python3-redis
-        - tk-dev
-        - tree
-        - vim
-        - zlib1g-dev
+    - name: my-packages
+      type: apt
+      source:
+        packages:
+          - ansible
+          - ansible-lint
+          - bat
+          - build-essential
+          - fpart
+          - libbz2-dev
+          - libdb-dev
+          - libffi-dev
+          - libffi-dev
+          - libgdbm-dev
+          - libgmp-dev
+          - liblzma-dev
+          - libncurses5-dev
+          - libncursesw5-dev
+          - libreadline-dev
+          - libreadline6-dev
+          - libsqlite3-dev
+          - libssl-dev
+          - libxml2-dev
+          - libxmlsec1-dev
+          - libyaml-dev
+          - llvm
+          - make
+          - nginx
+          - python3-pip
+          - python3-psutil
+          - python3-redis
+          - tk-dev
+          - tree
+          - vim
+          - zlib1g-dev
 
-  - name: set-image-name-abroot
-    type: includes
-    includes:
-      - modules/80-set-image-abroot-config.yml
+    - name: set-image-name-abroot
+      type: includes
+      includes:
+        - modules/80-set-image-abroot-config.yml
 
-  - name: cleanup
-    type: shell
-    commands:
-      - apt-get autoremove -y
-      - apt-get clean
-      - lpkg --lock
+    - name: cleanup
+      type: shell
+      commands:
+        - apt-get autoremove -y
+        - apt-get clean
+        - lpkg --lock
 
-  - name: fsguard
-    type: fsguard
-    CustomFsGuard: false
-    FsGuardLocation: "/usr/sbin/FsGuard"
-    GenerateKey: true
-    FilelistPaths: ["/usr/bin"]
-    modules:
-      - name: remove-prev-fsguard
-        type: shell
-        commands:
-          - rm -rf /FsGuard
-          - rm -f ./minisign.pub ./minisign.key
-          - chmod +x /usr/sbin/init
+    - name: fsguard
+      type: fsguard
+      CustomFsGuard: false
+      FsGuardLocation: "/usr/sbin/FsGuard"
+      GenerateKey: true
+      FilelistPaths: ["/usr/bin"]
+      modules:
+        - name: remove-prev-fsguard
+          type: shell
+          commands:
+            - rm -rf /FsGuard
+            - rm -f ./minisign.pub ./minisign.key
+            - chmod +x /usr/sbin/init
 
-  - name: cleanup2
-    type: shell
-    commands:
-      - rm -rf /tmp/*
-      - rm -rf /var/tmp/*
-      - rm -rf /sources
+    - name: cleanup2
+      type: shell
+      commands:
+        - rm -rf /tmp/*
+        - rm -rf /var/tmp/*
+        - rm -rf /sources
