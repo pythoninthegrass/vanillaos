@@ -1,6 +1,7 @@
 ---
 - name: Setup LunarVim
   hosts: all
+  gather_facts: true
   become: false
   vars:
     npm_global_dir: "{{ ansible_env.HOME }}/.npm-global"
@@ -43,6 +44,15 @@
         state: present
       become: true
 
+    - name: Create ~/.local/share directory and set permissions
+      ansible.builtin.file:
+        path: "{{ ansible_user_dir }}/.local/share"
+        state: directory
+        mode: '0755'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+      become: true
+
     - name: Download rustup installer
       ansible.builtin.get_url:
         url: https://sh.rustup.rs
@@ -53,19 +63,19 @@
       ansible.builtin.command:
         cmd: /tmp/rustup.sh -y
       args:
-        creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
+        creates: "{{ ansible_user_dir }}/.cargo/bin/rustup"
 
     - name: Install latest stable Rust
       ansible.builtin.shell: |
-        source "{{ ansible_env.HOME }}/.cargo/env"
+        source "{{ ansible_user_dir }}/.cargo/env"
         rustup install stable
       args:
-        creates: "{{ ansible_env.HOME }}/.cargo/bin/rustc"
+        creates: "{{ ansible_user_dir }}/.cargo/bin/rustc"
 
     - name: Install code-minimap
       ansible.builtin.shell: cargo install --locked code-minimap
       args:
-        creates: "{{ ansible_env.HOME }}/.cargo/bin/code-minimap"
+        creates: "{{ ansible_user_dir }}/.cargo/bin/code-minimap"
 
     - name: Create npm global directory
       ansible.builtin.file:
@@ -76,11 +86,11 @@
     - name: Set npm global prefix
       ansible.builtin.shell: npm config set prefix {{ npm_global_dir }}
       args:
-        creates: "{{ ansible_env.HOME }}/.npmrc"
+        creates: "{{ ansible_user_dir }}/.npmrc"
 
     - name: Add NPM_GLOBAL to .bashrc
       ansible.builtin.lineinfile:
-        path: "{{ ansible_env.HOME }}/.bashrc"
+        path: "{{ ansible_user_dir }}/.bashrc"
         line: 'export NPM_GLOBAL="{{ npm_global_dir }}/bin"'
         state: present
 
@@ -102,10 +112,9 @@
         cmd: /tmp/lunarvim_installer.sh -y
       args:
         chdir: /tmp
-        creates: "{{ ansible_env.HOME }}/.local/bin/lvim"
+        creates: "{{ ansible_user_dir }}/.local/bin/lvim"
       environment:
         LV_BRANCH: 'release-1.4/neovim-0.9'
       become: true
-      become_user: "{{ ansible_env.USER }}"
+      become_user: "{{ ansible_user }}"
       become_method: sudo
-      tags: qa
