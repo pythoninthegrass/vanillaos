@@ -95,7 +95,6 @@
         dest: /tmp/lunarvim_installer.sh
         mode: '0755'
 
-    # TODO: try without `-y` flag (e.g., in fedora)
     - name: |
         Install LunarVim]
         DESC [Install LunarVim with official script. NOTE: this takes a few minutes
@@ -106,7 +105,6 @@
         creates: "{{ ansible_env.HOME }}/.local/bin/lvim"
       environment:
         LV_BRANCH: 'release-1.4/neovim-0.9'
-        INTERACTIVE_MODE: 0
       become: true
       become_user: "{{ ansible_env.USER }}"
       become_method: sudo
