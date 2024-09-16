@@ -49,3 +49,6 @@ Point ABRoot to pythoninthegrass' custom image to use it.
 
 * [Vib images](https://github.com/Vanilla-OS/Vib)
 * [Official Vanilla OS images](https://images.vanillaos.org)
+* [How to add docker into my custom Vanilla OS image? : r/vanillaos](https://www.reddit.com/r/vanillaos/comments/1em7ke6/how_to_add_docker_into_my_custom_vanilla_os_image/)
+* [How to create a good developer environment : r/vanillaos](https://www.reddit.com/r/vanillaos/comments/1dhslfe/how_to_create_a_good_developer_environment/)
+* [Christian Hergert / ptyxis · GitLab](https://gitlab.gnome.org/chergert/ptyxis)
