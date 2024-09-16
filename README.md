@@ -57,6 +57,46 @@ echo 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"' >> ~/.bash_aliases
 source ~/.bashrc
 ```
 
+### Distrobox
+
+Install [Distrobox](https://docs.vanillaos.org/handbook/en/install-distrobox) et al.
+
+```bash
+curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh -s -- --next --prefix ~/.local
+```
+
+Add `distrobox`'s `bin` directory to the `PATH` to `.bash_aliases`.
+
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bash_aliases
+source ~/.bashrc
+```
+
+Create a `distrobox` configuration file in `~/.config/distrobox/distrobox.conf` with the following content:
+
+```ini
+container_always_pull="1"
+container_generate_entry=0
+container_manager="docker"
+container_image_default="registry.fedoraproject.org/fedora-toolbox:latest"
+container_name_default="distrobox-default"
+container_user_custom_home="$HOME/.config/distrobox/home"
+# container_init_hook="~/.local/distrobox/a_custom_default_init_hook.sh"
+# container_pre_init_hook="~/a_custom_default_pre_init_hook.sh"
+non_interactive="1"
+skip_workdir="0"
+```
+
+Pull an image and use the container:
+
+```bash
+distrobox create --name ubuntu-lts --image ubuntu:latest
+distrobox enter --name ubuntu-lts
+cat /etc/os-release
+exit
+distrobox stop ubuntu-lts
+```
+
 ## Further Reading
 
 > [!TIP]
