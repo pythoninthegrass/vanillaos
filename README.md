@@ -11,6 +11,7 @@ Some quality of life packages are pre-installed:
 * `docker`: OG container runtime
   * For those who need/want to use Docker over Podman
   * Podman is still available and the `vso shell` container image is Podman-based
+* `vim`: to start flame wars
 * `ansible`: configuration management
 * `bat`: cat clone with wings
 * `build-essential`: build tools
@@ -40,6 +41,20 @@ Point ABRoot to pythoninthegrass' custom image to use it.
   "name": "pythoninthegrass/vanillaos",
   "tag": "main",
 }
+```
+
+## Other quality of life items
+
+### Homebrew
+
+Install [Homebrew](https://docs.vanillaos.org/handbook/en/install-homebrew). Then add `brew` to the `PATH` and `shellenv` to `.bash_aliases` (sourced by default in `~/.bashrc`).
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+touch ~/.bash_aliases
+echo 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"' >> ~/.bash_aliases
+(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> ~/.bash_aliases
+source ~/.bashrc
 ```
 
 ## Further Reading
