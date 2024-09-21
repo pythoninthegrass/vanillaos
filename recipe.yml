@@ -37,6 +37,14 @@ stages:
       commands:
         - flatpak install -y --noninteractive --from https://nightly.gnome.org/repo/appstream/org.gnome.Ptyxis.Devel.flatpakref
 
+    - name: Add debian stable repos
+      type: shell
+      commands:
+        - echo "deb http://deb.debian.org/debian bookworm main contrib non-free" > /etc/apt/sources.list.d/debian-stable.list
+        - echo "deb http://deb.debian.org/debian bookworm-updates main contrib non-free" >> /etc/apt/sources.list.d/debian-stable.list
+        - echo "deb http://security.debian.org/debian-security bookworm-security main contrib non-free" >> /etc/apt/sources.list.d/debian-stable.list
+        - apt-get update
+
     - name: my-packages
       type: apt
       source:
