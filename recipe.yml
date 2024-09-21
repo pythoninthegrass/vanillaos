@@ -62,8 +62,7 @@ stages:
           - libgdbm-dev
           - libgmp-dev
           - liblzma-dev
-          - libncurses5-dev
-          - libncursesw5-dev
+          - libncurses-dev
           - libreadline-dev
           - libreadline6-dev
           - libsqlite3-dev
