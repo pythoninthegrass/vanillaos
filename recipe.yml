@@ -45,6 +45,7 @@ stages:
           - ansible-lint
           - bat
           - build-essential
+          - cockpit
           - fpart
           - libbz2-dev
           - libdb-dev
