@@ -228,7 +228,7 @@ jobs:
           type=image,name=${{ env.IMAGE_URL }},push=true
 
     - name: Attest pushed image
-      uses: actions/attest-build-provenance@v1
+      uses: actions/attest-build-provenance@v2
       if: ${{ github.event_name != 'pull_request' }}
       with:
         subject-name: ${{ env.IMAGE_URL }}
