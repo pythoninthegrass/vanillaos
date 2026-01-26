@@ -27,7 +27,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Cache APT packages
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           ~/.apt/archives
@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Cache APT packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.apt/archives
